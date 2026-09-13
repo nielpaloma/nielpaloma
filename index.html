@@ -1,14 +1,236 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ConectaTerra</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ConectaTerra - plataforma brasileira para conectar vendedores, compradores e corretores de terrenos." />
+  <title>ConectaTerra | Terrenos no Brasil</title>
+  <style>
+    :root{
+      --bg:#f6f8f6;--card:#fff;--text:#17311f;--muted:#6c7b70;--brand:#1f7a45;--brand2:#e8f4ec;
+      --line:#dfe7e1;--danger:#b42318;--gold:#8a6500;--shadow:0 10px 30px rgba(25,60,35,.08)
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}.wrap{max-width:1180px;margin:auto;padding:0 18px}
+    header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    nav{height:70px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#1f7a45,#7acb86);display:grid;place-items:center;color:white}
+    .navlinks{display:flex;gap:8px;flex-wrap:wrap}.navlinks button,.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .navlinks button{background:transparent;color:#425a48}.navlinks button:hover{background:#eef4ef}.btn{background:var(--brand);color:#fff}.btn.secondary{background:#fff;color:var(--brand);border:1px solid var(--line)} .btn.dark{background:#17311f}
+    .hero{padding:62px 0 34px;background:linear-gradient(180deg,#edf8ef,#f6f8f6)}
+    .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:center}
+    h1{font-size:clamp(38px,5vw,64px);line-height:1.02;margin:0 0 18px}.lead{font-size:20px;color:#496053;max-width:760px}
+    .hero-card,.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.hero-card{padding:22px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:16px;border-radius:14px;background:#f8fbf8;text-align:center}.stat b{font-size:22px;display:block}
+    .section{padding:36px 0}.section h2{font-size:30px;margin:0 0 8px}.sub{color:var(--muted);margin:0 0 20px}
+    .filters{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr auto;gap:10px;margin:18px 0}
+    input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;color:inherit} textarea{min-height:110px;resize:vertical}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.listing{overflow:hidden}.cover{height:170px;background:linear-gradient(135deg,#b6d7b9,#6ea979);display:flex;align-items:flex-end;padding:14px;color:#fff;font-weight:800;font-size:20px}
+    .listing .body{padding:16px}.price{font-size:22px;font-weight:900}.meta{font-size:14px;color:var(--muted);margin:5px 0 12px}.tag{display:inline-block;background:var(--brand2);color:var(--brand);padding:6px 9px;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px}
+    .view{display:none}.view.active{display:block}.panel{display:grid;grid-template-columns:240px 1fr;gap:18px}.side{padding:15px}.side button{width:100%;margin:5px 0;text-align:left;background:#f7faf7;border:0;padding:11px;border-radius:10px;cursor:pointer}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{padding:18px}.kpi strong{font-size:26px;display:block}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.full{grid-column:1/-1}
+    .plans{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.plan{padding:20px;position:relative}.plan.featured{border:2px solid var(--brand)}.plan .money{font-size:30px;font-weight:900}.small{font-size:13px;color:var(--muted)}
+    .chat{display:grid;grid-template-columns:290px 1fr;min-height:430px}.chat-list{border-right:1px solid var(--line);padding:12px}.conversation{padding:16px;display:flex;flex-direction:column}.messages{flex:1;display:flex;flex-direction:column;gap:9px}.msg{max-width:70%;padding:10px 12px;border-radius:14px;background:#eef4ef}.msg.me{margin-left:auto;background:#dff2e4}.chatbox{display:flex;gap:8px;margin-top:12px}
+    table{width:100%;border-collapse:collapse}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}
+    .notice{padding:12px 14px;border-radius:12px;background:#fff8e6;color:#6b5600;border:1px solid #f1dda1;margin:10px 0}
+    footer{padding:34px 0;border-top:1px solid var(--line);color:var(--muted);margin-top:34px}
+    @media(max-width:900px){.hero-grid,.panel,.chat{grid-template-columns:1fr}.grid,.plans{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}.chat-list{border-right:0;border-bottom:1px solid var(--line)}} 
+    @media(max-width:600px){.grid,.plans,.formgrid,.filters{grid-template-columns:1fr}.full{grid-column:auto}.navlinks{display:none}.stats{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+  </style>
 </head>
-
 <body>
-  <h1>🌱 ConectaTerra</h1>
-  <h2>Projeto funcionando!</h2>
-  <p>Minha primeira implantação na Vercel.</p>
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="brand" onclick="showView('home')" style="cursor:pointer"><div class="logo">🌱</div>ConectaTerra</div>
+      <div class="navlinks">
+        <button onclick="showView('home')">Terrenos</button>
+        <button onclick="showView('publicar')">Publicar</button>
+        <button onclick="showView('corretor')">Corretores</button>
+        <button onclick="showView('planos')">Planos</button>
+        <button onclick="showView('chat')">Chat</button>
+        <button onclick="showView('painel')">Meu painel</button>
+      </div>
+      <button class="btn" onclick="showView('publicar')">Anunciar terreno</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section id="home" class="view active">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="tag">Brasil inteiro • compra por brasileiros e estrangeiros</span>
+        <h1>Terrenos certos, pessoas certas, na cidade certa.</h1>
+        <p class="lead">A ConectaTerra conecta vendedores, compradores e corretores em uma plataforma focada em terrenos, com filtros por cidade e bairro, negociação por chat e anúncios segmentados.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
+          <button class="btn" onclick="document.getElementById('busca').scrollIntoView({behavior:'smooth'})">Buscar terrenos</button>
+          <button class="btn secondary" onclick="showView('publicar')">Quero vender</button>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h3 style="margin-top:0">Visão rápida</h3>
+        <div class="stats"><div class="stat"><b id="statAds">6</b>anúncios demo</div><div class="stat"><b>27</b>cidades</div><div class="stat"><b>4.9/5</b>avaliação</div></div>
+        <div class="notice">Primeiro mês grátis. Depois escolha o plano mensal, anual ou vitalício.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap section" id="busca">
+    <h2>Encontre terrenos por localização</h2><p class="sub">Mostramos primeiro os terrenos da cidade escolhida. Use bairro para refinar ainda mais.</p>
+    <div class="filters">
+      <select id="estado"><option value="">Estado</option><option>SP</option><option>MG</option><option>RJ</option><option>BA</option><option>PR</option><option>SC</option><option>GO</option><option>PE</option><option>CE</option></select>
+      <input id="cidade" placeholder="Cidade (ex.: Campinas)">
+      <input id="bairro" placeholder="Bairro">
+      <select id="tipo"><option value="">Todos</option><option>Urbano</option><option>Rural</option><option>Comercial</option><option>Chácara</option></select>
+      <button class="btn" onclick="filtrar()">Buscar</button>
+    </div>
+    <div id="listings" class="grid"></div>
+  </div>
+
+  <div class="wrap section">
+    <h2>Para cada perfil</h2>
+    <div class="grid">
+      <div class="card kpi"><strong>Comprador</strong><p>Salve favoritos, filtre por cidade e bairro e negocie diretamente pelo chat.</p></div>
+      <div class="card kpi"><strong>Vendedor</strong><p>Publique seus terrenos, escolha alcance local ou nacional e acompanhe contatos.</p></div>
+      <div class="card kpi"><strong>Corretor</strong><p>Crie perfil profissional, receba leads e ofereça corretagem dentro da plataforma.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="publicar" class="view">
+  <div class="wrap section">
+    <h2>Publicar terreno</h2><p class="sub">Cadastre manualmente ou informe um link para importar informações básicas do anúncio.</p>
+    <div class="card" style="padding:20px">
+      <div class="formgrid">
+        <div class="full"><label>Importar de outro anúncio</label><div style="display:flex;gap:8px"><input id="urlImport" placeholder="https://..."><button class="btn secondary" onclick="importar()">Importar</button></div><div class="small">A importação automática usa uma função serverless da Vercel para tentar ler título, descrição e imagem Open Graph.</div></div>
+        <div><label>Título</label><input id="titulo" placeholder="Terreno 450 m² próximo ao centro"></div>
+        <div><label>Preço (R$)</label><input id="preco" type="number" placeholder="120000"></div>
+        <div><label>Estado</label><input id="pubEstado" placeholder="SP"></div>
+        <div><label>Cidade</label><input id="pubCidade" placeholder="Campinas"></div>
+        <div><label>Bairro</label><input id="pubBairro" placeholder="Jardim ..."></div>
+        <div><label>Tipo</label><select id="pubTipo"><option>Urbano</option><option>Rural</option><option>Comercial</option><option>Chácara</option></select></div>
+        <div><label>Área (m²)</label><input id="area" type="number" placeholder="450"></div>
+        <div><label>Alcance</label><select id="alcance"><option>Somente esta cidade</option><option>Todo o Brasil</option></select></div>
+        <div class="full"><label>Descrição</label><textarea id="descricao" placeholder="Documentação, acesso, infraestrutura, condições de negociação..."></textarea></div>
+        <div><label>WhatsApp/telefone</label><input id="contato" placeholder="(00) 00000-0000"></div>
+        <div><label>Link original (opcional)</label><input id="linkOriginal" placeholder="https://..."></div>
+      </div>
+      <div style="margin-top:14px"><button class="btn" onclick="publicar()">Publicar anúncio</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="painel" class="view">
+  <div class="wrap section">
+    <h2>Meu painel</h2>
+    <div class="kpis">
+      <div class="card kpi"><span class="small">Meus anúncios</span><strong id="kpiMeus">0</strong></div>
+      <div class="card kpi"><span class="small">Visualizações</span><strong>184</strong></div>
+      <div class="card kpi"><span class="small">Conversas</span><strong>7</strong></div>
+      <div class="card kpi"><span class="small">Favoritos</span><strong>12</strong></div>
+    </div>
+    <div class="panel" style="margin-top:18px">
+      <aside class="card side"><b>Área do usuário</b><button>Meus anúncios</button><button>Favoritos</button><button>Mensagens</button><button>Assinatura</button><button>Dados pessoais</button></aside>
+      <div class="card" style="padding:18px"><h3>Seus anúncios</h3><div id="meusAnuncios"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="corretor" class="view">
+  <div class="wrap section">
+    <h2>Painel do corretor</h2><p class="sub">Uma vitrine profissional para corretores captarem proprietários e compradores.</p>
+    <div class="grid">
+      <div class="card kpi"><strong>Perfil profissional</strong><p>CRECI, cidades atendidas, especialidades e avaliação.</p></div>
+      <div class="card kpi"><strong>Leads</strong><p>Receba solicitações de compradores e vendedores interessados em corretagem.</p></div>
+      <div class="card kpi"><strong>Anúncios</strong><p>Gerencie imóveis e destaque sua atuação por cidade e bairro.</p></div>
+    </div>
+    <div class="card" style="padding:20px;margin-top:16px">
+      <h3>Criar perfil de corretor</h3>
+      <div class="formgrid"><input placeholder="Nome profissional"><input placeholder="CRECI"><input placeholder="Cidade principal"><input placeholder="WhatsApp"><textarea class="full" placeholder="Apresentação profissional"></textarea></div>
+      <button class="btn" style="margin-top:12px">Salvar perfil</button>
+    </div>
+  </div>
+</section>
+
+<section id="planos" class="view">
+  <div class="wrap section">
+    <h2>Assinaturas</h2><p class="sub">Todos começam com 30 dias grátis. Após o período, escolha o plano que preferir.</p>
+    <div class="plans">
+      <div class="card plan"><span class="tag">Teste</span><h3>Primeiro mês</h3><div class="money">R$ 0</div><p>30 dias para conhecer a plataforma.</p><button class="btn secondary" onclick="assinar('Teste grátis')">Começar grátis</button></div>
+      <div class="card plan"><h3>Mensal</h3><div class="money">R$ 10</div><p>por mês</p><button class="btn" onclick="assinar('Mensal')">Escolher mensal</button></div>
+      <div class="card plan featured"><span class="tag">Melhor custo</span><h3>Anual</h3><div class="money">R$ 80</div><p>por ano</p><button class="btn" onclick="assinar('Anual')">Escolher anual</button></div>
+      <div class="card plan"><h3>Vitalício</h3><div class="money">R$ 150</div><p>pagamento único</p><button class="btn dark" onclick="assinar('Vitalício')">Escolher vitalício</button></div>
+    </div>
+    <div class="notice">Os botões de pagamento estão em modo demonstração. Para cobrança real, conecte Mercado Pago, Stripe ou outro gateway e configure checkout seguro no backend.</div>
+  </div>
+</section>
+
+<section id="chat" class="view">
+  <div class="wrap section">
+    <h2>Negociação por chat</h2><p class="sub">Converse sobre visita, documentação, condições e proposta sem sair da plataforma.</p>
+    <div class="card chat">
+      <div class="chat-list"><b>Conversas</b><p>João • Terreno Campinas</p><p>Maria • Chácara Atibaia</p><p>Corretor Paulo • Cotação</p></div>
+      <div class="conversation">
+        <div class="messages" id="messages"><div class="msg">Olá! O terreno ainda está disponível?</div><div class="msg me">Sim. Podemos combinar uma visita no sábado.</div></div>
+        <div class="chatbox"><input id="chatInput" placeholder="Digite uma mensagem..."><button class="btn" onclick="enviarMsg()">Enviar</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="admin" class="view">
+  <div class="wrap section">
+    <h2>Painel administrativo</h2><div class="notice">Protótipo visual. Em produção, esta área precisa de autenticação forte e permissões de administrador no servidor.</div>
+    <div class="kpis"><div class="card kpi"><span class="small">Usuários</span><strong>1.248</strong></div><div class="card kpi"><span class="small">Anúncios</span><strong>386</strong></div><div class="card kpi"><span class="small">Assinantes</span><strong>214</strong></div><div class="card kpi"><span class="small">MRR</span><strong>R$ 2.140</strong></div></div>
+    <div class="card" style="padding:18px;margin-top:16px"><h3>Moderação de anúncios</h3><table><thead><tr><th>Anúncio</th><th>Cidade</th><th>Usuário</th><th>Status</th><th>Ação</th></tr></thead><tbody><tr><td>Terreno 450 m²</td><td>Campinas/SP</td><td>Ana V.</td><td>Ativo</td><td><button class="btn secondary">Revisar</button></td></tr><tr><td>Chácara 2.000 m²</td><td>Atibaia/SP</td><td>Marcos S.</td><td>Pendente</td><td><button class="btn">Aprovar</button></td></tr></tbody></table></div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><b>ConectaTerra</b> — plataforma de conexão entre compradores, vendedores e corretores de terrenos. <span style="float:right;cursor:pointer" onclick="showView('admin')">Admin</span><br><span class="small">A plataforma não substitui cartório, advogado, corretor ou análise documental. Recomenda-se verificar matrícula, certidões, zoneamento e titularidade antes de qualquer pagamento.</span></div></footer>
+
+<script>
+const baseListings=[
+ {id:1,titulo:'Terreno 450 m² próximo ao centro',preco:120000,estado:'SP',cidade:'Campinas',bairro:'Jardim Florence',tipo:'Urbano',area:450},
+ {id:2,titulo:'Chácara com 2.000 m² e acesso asfaltado',preco:280000,estado:'SP',cidade:'Atibaia',bairro:'Portão',tipo:'Chácara',area:2000},
+ {id:3,titulo:'Lote residencial 300 m²',preco:85000,estado:'MG',cidade:'Uberlândia',bairro:'Morada Nova',tipo:'Urbano',area:300},
+ {id:4,titulo:'Área rural 5 hectares',preco:420000,estado:'GO',cidade:'Anápolis',bairro:'Zona Rural',tipo:'Rural',area:50000},
+ {id:5,titulo:'Terreno comercial em avenida',preco:350000,estado:'PR',cidade:'Londrina',bairro:'Centro',tipo:'Comercial',area:600},
+ {id:6,titulo:'Lote próximo à praia',preco:190000,estado:'SC',cidade:'Itajaí',bairro:'Praia Brava',tipo:'Urbano',area:360}
+];
+function getMeus(){return JSON.parse(localStorage.getItem('ct_meus')||'[]')}
+function allListings(){return [...getMeus(),...baseListings]}
+function money(v){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v)}
+function render(list=allListings()){
+ const el=document.getElementById('listings'); el.innerHTML=list.map(x=>`<article class="card listing"><div class="cover">${x.cidade}/${x.estado}</div><div class="body"><div class="price">${money(x.preco)}</div><b>${x.titulo}</b><div class="meta">${x.bairro} • ${x.area.toLocaleString('pt-BR')} m²</div><span class="tag">${x.tipo}</span><button class="btn secondary" style="margin-top:12px;width:100%" onclick="showView('chat')">Conversar sobre este terreno</button></div></article>`).join('');
+ document.getElementById('statAds').textContent=allListings().length;
+}
+function filtrar(){
+ let e=document.getElementById('estado').value.toLowerCase(),c=document.getElementById('cidade').value.toLowerCase(),b=document.getElementById('bairro').value.toLowerCase(),t=document.getElementById('tipo').value.toLowerCase();
+ render(allListings().filter(x=>(!e||x.estado.toLowerCase()==e)&&(!c||x.cidade.toLowerCase().includes(c))&&(!b||x.bairro.toLowerCase().includes(b))&&(!t||x.tipo.toLowerCase()==t)));
+}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});if(id==='painel')renderPainel()}
+async function importar(){
+ const url=document.getElementById('urlImport').value.trim(); if(!url)return alert('Cole o link do anúncio.');
+ document.getElementById('linkOriginal').value=url;
+ try{
+   const r=await fetch('/api/importar-anuncio?url='+encodeURIComponent(url)); const d=await r.json();
+   if(!r.ok) throw new Error(d.error||'Falha');
+   if(d.title)document.getElementById('titulo').value=d.title;
+   if(d.description)document.getElementById('descricao').value=d.description;
+   alert('Informações importadas. Revise os dados antes de publicar.');
+ }catch(e){ alert('Não foi possível ler esse site automaticamente. O link foi salvo; complete os campos manualmente.'); }
+}
+function publicar(){
+ const x={id:Date.now(),titulo:titulo.value||'Terreno sem título',preco:Number(preco.value||0),estado:pubEstado.value||'BR',cidade:pubCidade.value||'Cidade',bairro:pubBairro.value||'Bairro não informado',tipo:pubTipo.value,area:Number(area.value||0),descricao:descricao.value,alcance:alcance.value,contato:contato.value,link:linkOriginal.value};
+ const arr=getMeus();arr.unshift(x);localStorage.setItem('ct_meus',JSON.stringify(arr));render();alert('Anúncio publicado neste navegador. Para produção, conecte banco de dados e login.');showView('painel');
+}
+function renderPainel(){const a=getMeus();document.getElementById('kpiMeus').textContent=a.length;document.getElementById('meusAnuncios').innerHTML=a.length?a.map(x=>`<div style="padding:12px 0;border-bottom:1px solid var(--line)"><b>${x.titulo}</b><div class="small">${x.cidade}/${x.estado} • ${money(x.preco)} • ${x.alcance}</div></div>`).join(''):'<p class="small">Você ainda não publicou anúncios neste navegador.</p>'}
+function enviarMsg(){const i=document.getElementById('chatInput');if(!i.value.trim())return;document.getElementById('messages').insertAdjacentHTML('beforeend',`<div class="msg me">${i.value.replace(/</g,'&lt;')}</div>`);i.value=''}
+function assinar(plano){alert('Plano '+plano+' selecionado. O checkout real será ativado ao conectar um gateway de pagamento.')}
+render();
+</script>
 </body>
 </html>
