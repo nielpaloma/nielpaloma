@@ -1,152 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ConectaTerra | Login e anúncios reais</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ConectaTerra | Terrenos no Brasil</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{font-family:Arial,sans-serif;margin:0;background:#f6f8f6;color:#17311f}
-.wrap{max-width:1000px;margin:auto;padding:20px}
-header{background:#fff;border-bottom:1px solid #ddd}
-nav{display:flex;justify-content:space-between;align-items:center;gap:10px}
-button{background:#1f7a45;color:white;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
-button.alt{background:white;color:#1f7a45;border:1px solid #ddd}
-.card{background:white;border:1px solid #ddd;border-radius:16px;padding:18px;margin:14px 0}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-input,select,textarea{width:100%;padding:11px;border:1px solid #ddd;border-radius:9px;box-sizing:border-box}
-textarea{min-height:100px}.full{grid-column:1/-1}.hidden{display:none}.muted{color:#6c7b70}
-#auth{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;padding:20px}
-#auth.hidden{display:none}.modal{background:#fff;padding:20px;border-radius:16px;max-width:420px;width:100%}
-.listings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media(max-width:760px){.grid,.listings{grid-template-columns:1fr}.full{grid-column:auto}}
+body{font-family:Arial,sans-serif;margin:0;background:#f6f8f6;color:#17311f}.wrap{max-width:1100px;margin:auto;padding:20px}header{background:#fff;border-bottom:1px solid #ddd}nav{display:flex;justify-content:space-between;align-items:center;gap:10px}button{background:#1f7a45;color:#fff;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}button.alt{background:#fff;color:#1f7a45;border:1px solid #ddd}.card{background:#fff;border:1px solid #ddd;border-radius:16px;padding:18px;margin:14px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}input,select,textarea{width:100%;padding:11px;border:1px solid #ddd;border-radius:9px;box-sizing:border-box}textarea{min-height:100px}.hidden{display:none!important}.muted{color:#6c7b70}#auth{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}#auth.hidden{display:none}.modal{background:#fff;padding:20px;border-radius:16px;max-width:430px;width:100%}.listings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.listing{overflow:hidden;padding:0}.listing-body{padding:16px}.media-main{width:100%;height:220px;object-fit:cover;background:#ddd}.placeholder{height:220px;background:#cfe3d2;display:grid;place-items:center;font-size:42px}.preview{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.preview img,.preview video{width:100%;height:90px;object-fit:cover;border-radius:8px}.upload{padding:12px;border:1px dashed #99b7a0;border-radius:10px;margin-top:12px}.price{font-size:22px;font-weight:800}@media(max-width:800px){.listings{grid-template-columns:1fr 1fr}.preview{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.grid,.listings{grid-template-columns:1fr}.full{grid-column:auto}.preview{grid-template-columns:repeat(2,1fr)}nav{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
-<header><div class="wrap"><nav>
-<h2>🌱 ConectaTerra</h2>
-<div>
-<span id="status">Visitante</span>
-<button class="alt" onclick="openAuth()">Entrar / Criar conta</button>
-<button id="logout" class="alt hidden" onclick="logout()">Sair</button>
-</div>
-</nav></div></header>
+<header><div class="wrap"><nav><h2>🌱 ConectaTerra</h2><div><span id="status">Visitante</span> <button class="alt" onclick="openAuth()">Entrar / Criar conta</button> <button id="logout" class="alt hidden" onclick="doLogout()">Sair</button></div></nav></div></header>
 
 <div class="wrap">
-<div class="card">
-<h1>Terrenos no Brasil</h1>
-<p class="muted">Agora conectado ao Supabase para cadastro, login e anúncios reais.</p>
-</div>
+<div class="card"><h1>Terrenos no Brasil</h1><p class="muted">Busca por cidade e bairro, cadastro de usuários e anúncios com fotos e vídeo.</p></div>
 
 <div class="card">
 <h2>Buscar terrenos</h2>
 <div class="grid">
-<input id="fEstado" placeholder="Estado">
-<input id="fCidade" placeholder="Cidade">
-<input id="fBairro" placeholder="Bairro">
+<input id="fEstado" placeholder="Estado"><input id="fCidade" placeholder="Cidade"><input id="fBairro" placeholder="Bairro">
 <select id="fTipo"><option value="">Todos</option><option>Urbano</option><option>Rural</option><option>Comercial</option><option>Chácara</option><option>Sítio</option><option>Fazenda</option></select>
-</div>
-<p><button onclick="loadListings()">Buscar</button></p>
-<div id="listings" class="listings"></div>
+</div><p><button onclick="loadListings()">Buscar</button></p><div id="listings" class="listings"></div>
 </div>
 
-<div class="card">
-<h2>Publicar terreno</h2>
-<p class="muted">Você precisa entrar para publicar.</p>
+<div id="publicar" class="card">
+<h2>Publicar terreno</h2><p class="muted">Até 10 fotos e 1 vídeo.</p>
 <div class="grid">
-<input id="titulo" class="full" placeholder="Título">
-<textarea id="descricao" class="full" placeholder="Descrição"></textarea>
-<input id="preco" type="number" placeholder="Preço">
-<input id="area" type="number" placeholder="Área m²">
-<input id="estado" placeholder="Estado">
-<input id="cidade" placeholder="Cidade">
-<input id="bairro" placeholder="Bairro">
+<input id="titulo" class="full" placeholder="Título"><textarea id="descricao" class="full" placeholder="Descrição"></textarea>
+<input id="preco" type="number" placeholder="Preço"><input id="area" type="number" placeholder="Área m²"><input id="estado" placeholder="Estado"><input id="cidade" placeholder="Cidade"><input id="bairro" placeholder="Bairro">
 <select id="tipo"><option>Urbano</option><option>Rural</option><option>Comercial</option><option>Chácara</option><option>Sítio</option><option>Fazenda</option><option>Outro</option></select>
 <select id="alcance"><option value="city">Somente esta cidade</option><option value="brazil">Todo o Brasil</option></select>
 <input id="sourceUrl" placeholder="Link original (opcional)">
 </div>
-<p><button onclick="publishListing()">Publicar anúncio</button></p>
+<div class="upload"><b>📷 Fotos</b><p class="muted">JPG, PNG ou WEBP. Máximo 10.</p><input id="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple><div id="photoPreview" class="preview"></div></div>
+<div class="upload"><b>🎥 Vídeo</b><p class="muted">MP4 ou WEBM. Máximo 1.</p><input id="video" type="file" accept="video/mp4,video/webm"><div id="videoPreview" class="preview"></div></div>
+<p><button id="publishBtn" onclick="publishListing()">Publicar anúncio</button></p>
 </div>
 </div>
 
-<div id="auth" class="hidden">
-<div class="modal">
+<div id="auth" class="hidden"><div class="modal">
 <h3 id="authTitle">Entrar</h3>
-<div id="signupFields" class="hidden">
-<input id="nome" placeholder="Nome completo" style="margin-bottom:8px">
-<select id="role" style="margin-bottom:8px"><option value="buyer">Comprador</option><option value="seller">Vendedor</option><option value="broker">Corretor</option></select>
-</div>
-<input id="email" type="email" placeholder="E-mail" style="margin-bottom:8px">
-<input id="senha" type="password" placeholder="Senha" style="margin-bottom:8px">
-<button id="authBtn" onclick="login()" style="width:100%">Entrar</button>
-<button class="alt" onclick="toggleMode()" style="width:100%;margin-top:8px">Trocar entre entrar/cadastrar</button>
-<button class="alt" onclick="closeAuth()" style="width:100%;margin-top:8px">Fechar</button>
+<div id="signupFields" class="hidden"><input id="nome" placeholder="Nome completo" style="margin-bottom:8px"><select id="role" style="margin-bottom:8px"><option value="buyer">Comprador</option><option value="seller">Vendedor</option><option value="broker">Corretor</option></select></div>
+<input id="email" type="email" placeholder="E-mail" style="margin-bottom:8px"><input id="senha" type="password" placeholder="Senha" style="margin-bottom:8px">
+<button id="authBtn" onclick="login()" style="width:100%">Entrar</button><button class="alt" onclick="toggleMode()" style="width:100%;margin-top:8px">Trocar entre entrar/cadastrar</button><button class="alt" onclick="closeAuth()" style="width:100%;margin-top:8px">Fechar</button>
 <p id="authMsg" class="muted"></p>
-</div>
-</div>
+</div></div>
 
 <script>
-const sb = supabase.createClient('https://qhnslatxvfvtgvtcsiip.supabase.co','sb_publishable_ayp4DoDkVqalVBgesZ4kyQ_w6QI8hIK');
-let signupMode=false,currentUser=null;
-
-function openAuth(){document.getElementById('auth').classList.remove('hidden')}
-function closeAuth(){document.getElementById('auth').classList.add('hidden')}
-function toggleMode(){
- signupMode=!signupMode;
- document.getElementById('signupFields').classList.toggle('hidden',!signupMode);
- document.getElementById('authTitle').textContent=signupMode?'Criar conta':'Entrar';
- document.getElementById('authBtn').textContent=signupMode?'Criar conta':'Entrar';
- document.getElementById('authBtn').onclick=signupMode?signup:login;
-}
-async function refreshUser(){
- const {data}=await sb.auth.getUser(); currentUser=data.user||null;
- document.getElementById('status').textContent=currentUser?currentUser.email:'Visitante';
- document.getElementById('logout').classList.toggle('hidden',!currentUser);
-}
-async function login(){
- const {error}=await sb.auth.signInWithPassword({email:email.value.trim(),password:senha.value});
- if(error)return authMsg.textContent=error.message;
- closeAuth();await refreshUser();
-}
-async function signup(){
- const {data,error}=await sb.auth.signUp({
-  email:email.value.trim(),password:senha.value,
-  options:{data:{full_name:nome.value.trim(),role:role.value}}
- });
- if(error)return authMsg.textContent=error.message;
- authMsg.textContent=data.session?'Conta criada e conectada.':'Conta criada. Verifique seu e-mail se a confirmação estiver ativada.';
- if(data.session){closeAuth();await refreshUser();}
-}
-async function logout(){await sb.auth.signOut();await refreshUser()}
+const sb=supabase.createClient('https://qhnslatxvfvtgvtcsiip.supabase.co','sb_publishable_ayp4DoDkVqalVBgesZ4kyQ_w6QI8hIK');
+let signupMode=false,currentUser=null,photoFiles=[],videoFile=null;
+const $=id=>document.getElementById(id);
+function openAuth(){$('auth').classList.remove('hidden')} function closeAuth(){$('auth').classList.add('hidden')}
+function toggleMode(){signupMode=!signupMode;$('signupFields').classList.toggle('hidden',!signupMode);$('authTitle').textContent=signupMode?'Criar conta':'Entrar';$('authBtn').textContent=signupMode?'Criar conta':'Entrar';$('authBtn').onclick=signupMode?signup:login}
+async function refreshUser(){const {data}=await sb.auth.getUser();currentUser=data.user||null;$('status').textContent=currentUser?currentUser.email:'Visitante';$('logout').classList.toggle('hidden',!currentUser)}
+async function login(){const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('senha').value});if(error)return $('authMsg').textContent=error.message;closeAuth();await refreshUser()}
+async function signup(){const {data,error}=await sb.auth.signUp({email:$('email').value.trim(),password:$('senha').value,options:{data:{full_name:$('nome').value.trim(),role:$('role').value}}});if(error)return $('authMsg').textContent=error.message;$('authMsg').textContent='Conta criada.';if(data.session){closeAuth();await refreshUser()}}
+async function doLogout(){await sb.auth.signOut();await refreshUser()}
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-
-async function loadListings(){
- let q=sb.from('listings').select('*').eq('status','published').order('created_at',{ascending:false});
- if(fEstado.value.trim()) q=q.ilike('state',fEstado.value.trim());
- if(fCidade.value.trim()) q=q.ilike('city','%'+fCidade.value.trim()+'%');
- if(fBairro.value.trim()) q=q.ilike('neighborhood','%'+fBairro.value.trim()+'%');
- if(fTipo.value) q=q.eq('property_type',fTipo.value);
- const {data,error}=await q;
- if(error){listings.innerHTML='<p>Erro ao carregar.</p>';return}
- listings.innerHTML=data.length?data.map(x=>`<div class="card"><b>${esc(x.title)}</b><p>${Number(x.price||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</p><small>${esc(x.city)}/${esc(x.state)} • ${esc(x.neighborhood||'')}</small></div>`).join(''):'<p class="muted">Nenhum terreno encontrado.</p>';
-}
-
+$('photos').addEventListener('change',e=>{photoFiles=[...e.target.files].slice(0,10);if(e.target.files.length>10)alert('Máximo de 10 fotos.');$('photoPreview').innerHTML=photoFiles.map(f=>`<img src="${URL.createObjectURL(f)}">`).join('')})
+$('video').addEventListener('change',e=>{videoFile=e.target.files[0]||null;$('videoPreview').innerHTML=videoFile?`<video src="${URL.createObjectURL(videoFile)}" controls></video>`:''})
+async function uploadMedia(listingId){const files=[...photoFiles];if(videoFile)files.push(videoFile);const paths=[];for(const file of files){const ext=(file.name.split('.').pop()||'bin').toLowerCase();const path=`${currentUser.id}/${listingId}/${crypto.randomUUID()}.${ext}`;const {error}=await sb.storage.from('terrenos').upload(path,file,{cacheControl:'3600'});if(error)throw error;paths.push(path)}return paths}
 async function publishListing(){
  if(!currentUser){openAuth();return}
- const payload={
-  owner_id:currentUser.id,title:titulo.value.trim(),description:descricao.value.trim(),
-  price:Number(preco.value||0),area_m2:Number(area.value||0),state:estado.value.trim(),
-  city:cidade.value.trim(),neighborhood:bairro.value.trim(),property_type:tipo.value,
-  visibility_scope:alcance.value,source_url:sourceUrl.value.trim()||null,status:'published'
- };
+ const payload={owner_id:currentUser.id,title:$('titulo').value.trim(),description:$('descricao').value.trim(),price:Number($('preco').value||0),area_m2:Number($('area').value||0),state:$('estado').value.trim(),city:$('cidade').value.trim(),neighborhood:$('bairro').value.trim(),property_type:$('tipo').value,visibility_scope:$('alcance').value,source_url:$('sourceUrl').value.trim()||null,status:'published'};
  if(!payload.title||!payload.state||!payload.city)return alert('Preencha título, estado e cidade.');
- const {error}=await sb.from('listings').insert(payload);
- if(error)return alert('Erro: '+error.message);
- alert('Anúncio publicado com sucesso!');
- await loadListings();
+ $('publishBtn').disabled=true;$('publishBtn').textContent='Publicando...';
+ try{
+  const {data,error}=await sb.from('listings').insert(payload).select('id').single();if(error)throw error;
+  const paths=await uploadMedia(data.id);
+  if(paths.length){const rows=paths.map((storage_path,i)=>({listing_id:data.id,storage_path,sort_order:i}));const {error:e2}=await sb.from('listing_images').insert(rows);if(e2)throw e2}
+  alert('Terreno publicado com sucesso!');photoFiles=[];videoFile=null;$('photos').value='';$('video').value='';$('photoPreview').innerHTML='';$('videoPreview').innerHTML='';await loadListings();
+ }catch(e){alert('Erro ao publicar: '+e.message)}finally{$('publishBtn').disabled=false;$('publishBtn').textContent='Publicar anúncio'}
 }
-sb.auth.onAuthStateChange(refreshUser);
-refreshUser();loadListings();
-</script>
-</body>
-</html>
+function publicUrl(path){return sb.storage.from('terrenos').getPublicUrl(path).data.publicUrl}
+function mediaHtml(arr){if(!arr||!arr.length)return '<div class="placeholder">🌱</div>';arr=[...arr].sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));const p=arr[0].storage_path,u=publicUrl(p);return /\.(mp4|webm)$/i.test(p)?`<video class="media-main" src="${u}" controls></video>`:`<img class="media-main" src="${u}" alt="Foto do terreno">`}
+async function loadListings(){
+ let q=sb.from('listings').select('*,listing_images(*)').eq('status','published').order('created_at',{ascending:false});
+ if($('fEstado').value.trim())q=q.ilike('state',$('fEstado').value.trim());if($('fCidade').value.trim())q=q.ilike('city','%'+$('fCidade').value.trim()+'%');if($('fBairro').value.trim())q=q.ilike('neighborhood','%'+$('fBairro').value.trim()+'%');if($('fTipo').value)q=q.eq('property_type',$('fTipo').value);
+ const {data,error}=await q;if(error){$('listings').innerHTML='<p>Erro ao carregar: '+esc(error.message)+'</p>';return}
+ $('listings').innerHTML=data.length?data.map(x=>`<article class="card listing">${mediaHtml(x.listing_images)}<div class="listing-body"><div class="price">${Number(x.price||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><h3>${esc(x.title)}</h3><p class="muted">${esc(x.city)}/${esc(x.state)} • ${esc(x.neighborhood||'')}</p><p>${esc((x.description||'').slice(0,180))}</p></div></article>`).join(''):'<p class="muted">Nenhum terreno encontrado.</p>'
+}
+sb.auth.onAuthStateChange(refreshUser);refreshUser();loadListings();
